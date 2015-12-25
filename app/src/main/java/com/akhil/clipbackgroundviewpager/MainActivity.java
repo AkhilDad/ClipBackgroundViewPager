@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.akhil.clipbackgroundviewpager.adapter.CustomFragmentPagerAdapter;
@@ -20,17 +21,19 @@ public class MainActivity extends AppCompatActivity {
     private static final float MIN_ALPHA = 0.5f;
     int k = 100;
     ImageView img1, img2;
+    Boolean isGoingToRightPage;
     private ViewPager mViewPager;
     private ClipDrawable mClipDrawable1;
     private ClipDrawable mClipDrawable2;
     private int mCurrentFragmentPosition;
-    Boolean isGoingToRightPage;
+    ClipDrawable clip1, clip2Right, clip3Left, clip4, clip2Left, clip3Right;
+    private int mSettingPosition;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ClipDrawable clip1, clip2Right, clip3Left, clip4, clip2Left, clip3Right;
+
         setContentView(R.layout.activity_main);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         img1 = (ImageView) findViewById(R.id.iv_clip1);
@@ -49,148 +52,79 @@ public class MainActivity extends AppCompatActivity {
         mClipDrawable2 = clip2Right;
         img1.setImageDrawable(mClipDrawable1);
         img2.setImageDrawable(mClipDrawable2);
+        findViewById(R.id.btn_click).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mViewPager.setCurrentItem(3);
+            }
+        });
 
         CustomFragmentPagerAdapter customFragmentPagerAdapter = new CustomFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(customFragmentPagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.e("onPageScrolled-position-->" + position, positionOffsetPixels+"onPageScrolled-positionOffset-->" + positionOffset);
-                if (positionOffset == 0) {
-                    switch (position) {
-                        case 0:
-                            mClipDrawable1 = clip1;
-                            mClipDrawable2 = clip2Right;
-                            mClipDrawable1.setLevel(10000);
-                            mClipDrawable2.setLevel(0);
-                            break;
-                        case 1:
-                            mClipDrawable1 = clip1;
-                            mClipDrawable2 = clip2Right;
-                            mClipDrawable1.setLevel(0);
-                            mClipDrawable2.setLevel(10000);
-                            break;
-                        case 2:
-                            mClipDrawable1 = clip2Right;
-                            mClipDrawable2 = clip3Left;
-                            mClipDrawable1.setLevel(0);
-                            mClipDrawable2.setLevel(10000);
-                            break;
-                    }
-                    img1.setImageDrawable(mClipDrawable1);
-                    img2.setImageDrawable(mClipDrawable2);
-                } else {
-                    if (isGoingToRightPage == null) {
-                        isGoingToRightPage = position == mCurrentFragmentPosition;
-                        Log.e("isGoingToRightPage","isGoingToRightPage"+isGoingToRightPage);
-                        if (isGoingToRightPage) {
-                            switch (position) {
-                                case 0:
-                                    mClipDrawable1 = clip1;
-                                    mClipDrawable2 = clip2Right;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                                case 1:
-                                    mClipDrawable1 = clip2Left;
-                                    mClipDrawable2 = clip3Right;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                                case 2:
-                                    mClipDrawable1 = clip3Right;
-                                    mClipDrawable2 = clip2Left;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                            }
-                        } else {
-                            switch (position) {
-                                case 0:
-                                    mClipDrawable1 = clip1;
-                                    mClipDrawable2 = clip2Right;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                                case 1:
-                                    mClipDrawable1 = clip2Left;
-                                    mClipDrawable2 = clip1;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                                case 2:
-                                    mClipDrawable1 = clip3Left;
-                                    mClipDrawable2 = clip2Left;
-                                    mClipDrawable1.setLevel(10000);
-                                    mClipDrawable2.setLevel(0);
-                                    break;
-                            }
-                        }
-                        img1.setImageDrawable(mClipDrawable1);
-                        img2.setImageDrawable(mClipDrawable2);
-                    } else {
-                        if (isGoingToRightPage) {
-                            // user is going to the right page
-                        } else {
-                            // user is going to the left page
-                        }
-
-                    }
-                    mClipDrawable1.setLevel((int) (10000 - (positionOffset * 10000)));
-                    mClipDrawable2.setLevel((int) (0 + positionOffset * 10000));
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mCurrentFragmentPosition = position;
-                isGoingToRightPage = null;
-                Log.d("onPageSelected", "onPageSelected" + position);
-                switch (position) {
-                    case 0:
-                        mClipDrawable1 = clip1;
-                        mClipDrawable2 = clip2Right;
-                        mClipDrawable1.setLevel(9000);
-                        mClipDrawable2.setLevel(0);
-                        break;
-                    case 1:
-                        mClipDrawable1 = clip2Left;
-                        mClipDrawable2 = clip3Right;
-                        mClipDrawable1.setLevel(9000);
-                        mClipDrawable2.setLevel(0);
-                        break;
-                    case 2:
-                        mClipDrawable1 = clip3Right;
-                        mClipDrawable2 = clip2Left;
-                        mClipDrawable1.setLevel(9000);
-                        mClipDrawable2.setLevel(0);
-                        break;
-
-                }
-                mClipDrawable1 = clip1;
-                mClipDrawable2 = clip2Right;
-                mClipDrawable1.setLevel(0);
-                mClipDrawable2.setLevel(10000);
-                img1.setImageDrawable(mClipDrawable1);
-                img2.setImageDrawable(mClipDrawable2);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-//                switch (state) {
-//                    case ViewPager.SCROLL_STATE_DRAGGING:
-//                        Log.e("SCROLL_STATE_DRAGGING", "SCROLL_STATE_DRAGGING");
+                Log.e("onPageScrolled-position-->" + position, mViewPager.getCurrentItem() + "<---onPageScrolled-positionOffset-->" + positionOffset);
+//                switch (position) {
+//                    case 0:
+//                        mClipDrawable1 = clip1;
+//                        mClipDrawable2 = clip2Right;
+////                        mClipDrawable1.setLevel(10000);
+////                        mClipDrawable2.setLevel(0);
 //                        break;
-//                    case ViewPager.SCROLL_STATE_IDLE:
-//                        Log.e("SCROLL_STATE_IDLE", "SCROLL_STATE_IDLE");
+//                    case 1:
+//                        mClipDrawable1 = clip4;
+//                        mClipDrawable2 = clip4;
+////                        mClipDrawable1.setLevel(10000);
+////                        mClipDrawable2.setLevel(0);
 //                        break;
-//                    case ViewPager.SCROLL_STATE_SETTLING:
-//                        Log.e("SCROLL_STATE_SETTLING", "SCROLL_STATE_SETTLING");
+//                    case 2:
+//                        mClipDrawable1 = clip3Left;
+//                        mClipDrawable2 = clip3Left;
+////                        mClipDrawable1.setLevel(10000);
+////                        mClipDrawable2.setLevel(0);
 //                        break;
-//
+//                    case 3:
+//                        mClipDrawable1 = clip4;
+//                        mClipDrawable2 = clip3Right;
+////                        mClipDrawable1.setLevel(10000);
+////                        mClipDrawable2.setLevel(0);
+//                        break;
 //                }
-            }
-        });
+                if (position == mSettingPosition) {
+                    setImagesAccordingToPos(mSettingPosition);
+                }
+                mClipDrawable1.setLevel((int) (10000 - (positionOffset * 10000)));
+                mClipDrawable2.setLevel((int) (0 + positionOffset * 10000));
+//            }
+        }
+
+        @Override
+        public void onPageSelected ( int position){
+            mCurrentFragmentPosition = position;
+            isGoingToRightPage = null;
+            mSettingPosition = position;
+            Log.d("onPageSelected", "onPageSelected" + position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged ( int state){
+                switch (state) {
+                    case ViewPager.SCROLL_STATE_DRAGGING:
+                        Log.e("SCROLL_STATE_DRAGGING", "SCROLL_STATE_DRAGGING");
+                        break;
+                    case ViewPager.SCROLL_STATE_IDLE:
+                        Log.d("SCROLL_STATE_IDLE", "SCROLL_STATE_IDLE"+mViewPager.getCurrentItem());
+                       setImagesAccordingToPos(mViewPager.getCurrentItem());
+                        break;
+                    case ViewPager.SCROLL_STATE_SETTLING:
+                        Log.e("SCROLL_STATE_SETTLING", "SCROLL_STATE_SETTLING");
+                        break;
+                }
+        }
+    }
+
+    );
 
 //        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
 //            @Override
@@ -199,8 +133,41 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        mCurrentFragmentPosition = mViewPager.getCurrentItem();
+    mCurrentFragmentPosition=mViewPager.getCurrentItem();
 
+}
+
+    private void setImagesAccordingToPos(int pos) {
+        switch (pos) {
+            case 0:
+                mClipDrawable1 = clip1;
+                mClipDrawable2 = clip2Right;
+//                        mClipDrawable1.setLevel(10000);
+//                        mClipDrawable2.setLevel(0);
+                break;
+            case 1:
+                mClipDrawable1 = clip2Left;
+                mClipDrawable2 = clip3Right;
+//                        mClipDrawable1.setLevel(10000);
+//                        mClipDrawable2.setLevel(0);
+                break;
+            case 2:
+                mClipDrawable1 = clip3Left;
+                mClipDrawable2 = clip4;
+//                        mClipDrawable1.setLevel(10000);
+//                        mClipDrawable2.setLevel(0);
+                break;
+            case 3:
+                mClipDrawable1 = clip4;
+                mClipDrawable2 = clip3Right;
+//                        mClipDrawable1.setLevel(10000);
+//                        mClipDrawable2.setLevel(0);
+                break;
+        }
+        img1.setImageDrawable(mClipDrawable1);
+        img2.setImageDrawable(mClipDrawable2);
+        mClipDrawable1.setLevel(10000);
+        mClipDrawable2.setLevel(0);
     }
 
     @Override
